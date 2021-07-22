@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.letsfocus">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LetsFocus">
+        <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,19 +25,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Timer_Focus"></activity>
-
+        <activity android:name=".Timer_Focus" />
         <activity android:name=".Calendar_Focus">
             <meta-data
                 android:name="com.google.android.gms.vision"
-                android:value="google_play_services_version"></meta-data>
-
+                android:value="google_play_services_version" />
             <meta-data
-                 android:name="com.google.android.geo.API_KEY"
-                 android:value="@string/CALENDAR_API"></meta-data>
+                android:name="com.google.android.geo.API_KEY"
+                android:value="@string/CALENDAR_API" />
         </activity>
-
-        <activity android:name=".Todo_Focus"></activity>
+        <activity android:name=".Todo_Focus" />
     </application>
+
 </manifest>
