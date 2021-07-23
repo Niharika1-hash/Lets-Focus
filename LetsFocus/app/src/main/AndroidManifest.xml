@@ -3,6 +3,7 @@
     package="com.example.letsfocus">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
     <application
         android:allowBackup="true"
@@ -34,6 +35,12 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="@string/CALENDAR_API" />
         </activity>
+        <service android:name="Timer_Focus"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
         <activity android:name=".Todo_Focus" />
     </application>
 

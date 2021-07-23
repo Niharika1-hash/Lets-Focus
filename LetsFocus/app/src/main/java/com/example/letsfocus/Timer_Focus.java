@@ -2,9 +2,15 @@ package com.example.letsfocus;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -25,15 +31,30 @@ public class Timer_Focus extends AppCompatActivity {
     private long mStartTimeInMillis;
     private long mTimeLeftInMillis;
     private long mEndTime;
+    private Button calendar;
+    private Button todo_list;
+    private TextView NStatus;
+    MediaPlayer mediaPlayer;
+    NotificationManager mNotificationManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.focus_timer);
+
+        mediaPlayer = MediaPlayer.create(this,R.raw.timer_end);
+
         mEditTextInput = findViewById(R.id.edit_text_input);
         mTextViewCountDown = findViewById(R.id.text_view_countdown);
         mButtonSet = findViewById(R.id.button_set);
         mButtonStartPause = findViewById(R.id.button_start_pause);
         mButtonReset = findViewById(R.id.button_reset);
+        calendar = findViewById(R.id.calendar_button);
+        todo_list = findViewById(R.id.todolist_button);
+        NStatus = findViewById(R.id.NStatus_View);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         mButtonSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +88,21 @@ public class Timer_Focus extends AppCompatActivity {
                 resetTimer();
             }
         });
+        calendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Timer_Focus.this, Calendar_Focus.class);
+                startActivity(intent);
+
+            }
+        });
+        todo_list.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Timer_Focus.this, Todo_Focus.class);
+                startActivity(intent);
+            }
+        }));
     }
     private void setTime(long milliseconds) {
         mStartTimeInMillis = milliseconds;
@@ -74,6 +110,9 @@ public class Timer_Focus extends AppCompatActivity {
         closeKeyboard();
     }
     private void startTimer() {
+
+        changeInterruptionFiler(NotificationManager.INTERRUPTION_FILTER_NONE);
+        NStatus.setText("Notifications Deactivated");
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
@@ -84,12 +123,16 @@ public class Timer_Focus extends AppCompatActivity {
             @Override
             public void onFinish() {
                 mTimerRunning = false;
+                changeInterruptionFiler(NotificationManager.INTERRUPTION_FILTER_ALL);
+                NStatus.setText("Notifications Activated");
                 updateWatchInterface();
+                mediaPlayer.start();
             }
         }.start();
         mTimerRunning = true;
         updateWatchInterface();
     }
+
     private void pauseTimer() {
         mCountDownTimer.cancel();
         mTimerRunning = false;
@@ -114,7 +157,8 @@ public class Timer_Focus extends AppCompatActivity {
         }
         mTextViewCountDown.setText(timeLeftFormatted);
     }
-    private void updateWatchInterface() {
+    private void updateWatchInterface()
+    {
         if (mTimerRunning) {
             mEditTextInput.setVisibility(View.INVISIBLE);
             mButtonSet.setVisibility(View.INVISIBLE);
@@ -158,7 +202,8 @@ public class Timer_Focus extends AppCompatActivity {
         }
     }
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         mStartTimeInMillis = prefs.getLong("startTimeInMillis", 600000);
@@ -176,6 +221,61 @@ public class Timer_Focus extends AppCompatActivity {
                 updateWatchInterface();
             } else {
                 startTimer();
+            }
+        }
+    }
+    protected void changeInterruptionFiler(int interruptionFilter) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        { // If api level minimum 23
+            /*
+                boolean isNotificationPolicyAccessGranted ()
+                    Checks the ability to read/modify notification policy for the calling package.
+                    Returns true if the calling package can read/modify notification policy.
+                    Request policy access by sending the user to the activity that matches the
+                    system intent action ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
+
+                    Use ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED to listen for
+                    user grant or denial of this access.
+
+                Returns
+                    boolean
+
+            */
+            // If notification policy access granted for this package
+            if (mNotificationManager.isNotificationPolicyAccessGranted())
+            {
+                /*
+                    void setInterruptionFilter (int interruptionFilter)
+                        Sets the current notification interruption filter.
+
+                        The interruption filter defines which notifications are allowed to interrupt
+                        the user (e.g. via sound & vibration) and is applied globally.
+
+                        Only available if policy access is granted to this package.
+
+                    Parameters
+                        interruptionFilter : int
+                        Value is INTERRUPTION_FILTER_NONE, INTERRUPTION_FILTER_PRIORITY,
+                        INTERRUPTION_FILTER_ALARMS, INTERRUPTION_FILTER_ALL
+                        or INTERRUPTION_FILTER_UNKNOWN.
+                */
+
+                // Set the interruption filter
+                mNotificationManager.setInterruptionFilter(interruptionFilter);
+            }
+            else {
+                /*
+                    String ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
+                        Activity Action : Show Do Not Disturb access settings.
+                        Users can grant and deny access to Do Not Disturb configuration from here.
+
+                    Input : Nothing.
+                    Output : Nothing.
+                    Constant Value : "android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS"
+                */
+                // If notification policy access not granted for this package
+                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                startActivity(intent);
             }
         }
     }
