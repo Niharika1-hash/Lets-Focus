@@ -10,7 +10,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#283C63"/>
 
     <Button
         android:id="@+id/btndelete"
@@ -19,5 +20,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:onClick="deleteTask"
-        android:text="DELETE" />
+        android:text="DELETE"
+        android:backgroundTint="#F85F73"/>
 </RelativeLayout>

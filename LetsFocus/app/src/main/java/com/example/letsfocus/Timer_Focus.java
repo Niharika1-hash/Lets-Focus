@@ -1,8 +1,17 @@
 package com.example.letsfocus;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Activity;
+import android.app.Application;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +29,12 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
-public class Timer_Focus extends AppCompatActivity {
+public class Timer_Focus extends AppCompatActivity implements Application.ActivityLifecycleCallbacks
+{
+
+    private int activityReferences = 0;
+    private boolean isActivityChangingConfigurations = false;
+    private boolean isDisrupted;
     private EditText mEditTextInput;
     private TextView mTextViewCountDown;
     private Button mButtonSet;
@@ -38,11 +52,20 @@ public class Timer_Focus extends AppCompatActivity {
     NotificationManager mNotificationManager;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTimeLeftInMillis=0;
+        mTimerRunning=false;
         setContentView(R.layout.focus_timer);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            registerActivityLifecycleCallbacks((Application.ActivityLifecycleCallbacks) this);
+            NotificationChannel channel = new NotificationChannel("Disruption Notification","Disruption Notification",NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
 
+        }
         mediaPlayer = MediaPlayer.create(this,R.raw.timer_end);
 
         mEditTextInput = findViewById(R.id.edit_text_input);
@@ -79,6 +102,7 @@ public class Timer_Focus extends AppCompatActivity {
                     pauseTimer();
                 } else {
                     startTimer();
+
                 }
             }
         });
@@ -190,6 +214,11 @@ public class Timer_Focus extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if(mTimerRunning==true)
+        {
+            isDisrupted=true;
+            mTimerRunning=false;
+        }
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong("startTimeInMillis", mStartTimeInMillis);
@@ -205,6 +234,10 @@ public class Timer_Focus extends AppCompatActivity {
     protected void onStart()
     {
         super.onStart();
+        if(isDisrupted ==true)
+        {
+            NStatus.setText("Disrupted");
+        }
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         mStartTimeInMillis = prefs.getLong("startTimeInMillis", 600000);
         mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
@@ -232,7 +265,7 @@ public class Timer_Focus extends AppCompatActivity {
                     Checks the ability to read/modify notification policy for the calling package.
                     Returns true if the calling package can read/modify notification policy.
                     Request policy access by sending the user to the activity that matches the
-                    system intent action ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
+                    system intent action ACTION_NOTIFICATION_POtiLICY_ACCESS_SETTINGS.
 
                     Use ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED to listen for
                     user grant or denial of this access.
@@ -279,4 +312,86 @@ public class Timer_Focus extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onActivityStarted(@NonNull Activity activity)
+    {
+        if (++activityReferences == 1 && !isActivityChangingConfigurations)
+        {
+            mTimeLeftInMillis=0;
+            updateCountDownText();
+
+
+        }
+
+    }
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+
+
+    }
+
+    @Override
+    public void onActivityResumed(@NonNull Activity activity)
+    {
+
+
+    }
+
+    @Override
+    public void onActivityPaused(@NonNull Activity activity)
+    {
+        NStatus.setText("Focus Session Disrupted! DND Deactivated");
+
+    }
+
+    @Override
+    public void onActivityStopped(@NonNull Activity activity)
+    {
+        isActivityChangingConfigurations = activity.isChangingConfigurations();
+        if (--activityReferences == 0 && !isActivityChangingConfigurations && mTimerRunning==true)
+        {
+
+            mTimerRunning = false;
+            isDisrupted = true;
+            pauseTimer();
+            changeInterruptionFiler(NotificationManager.INTERRUPTION_FILTER_ALL);
+            NStatus.setText("Focus Session Disrupted! DND Deactivated");
+            //send notification for Timer disruption
+            NotificationCompat.Builder builder =  new NotificationCompat.Builder(Timer_Focus.this,"Disruption Notification");
+            Intent resultIntent = new Intent(this,Timer_Focus.class);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(this,1,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentTitle("Attention!!");
+            builder.setContentText("Hey, your Focus Session just got disrupted!");
+            builder.setSmallIcon(R.drawable.notif);
+            builder.setAutoCancel(true);
+            builder.setContentIntent(resultPendingIntent);
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(Timer_Focus.this);
+            managerCompat.notify(1,builder.build());
+
+
+        }
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle)
+    {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(@NonNull Activity activity)
+    {
+
+    }
+
+
 }

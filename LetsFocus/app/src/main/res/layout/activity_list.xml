@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgpaleyellow"
+    android:background="@drawable/blackvector"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -15,29 +15,49 @@
 
         <RelativeLayout
             android:layout_width="368dp"
-            android:layout_height="176dp"
+            android:layout_height="160dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="20dp">
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="20dp"
+            android:background="#ffffff"
+            android:elevation="10dp">
 
             <TextView
                 android:id="@+id/txtvw1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Let's Focus"
-                android:textColor="#FF6F0D"
-                android:textSize="50sp"
+                android:text=" Let's Focus"
+                android:textColor="#283C63"
+                android:textSize="40sp"
                 android:textStyle="bold|italic" />
 
             <TextView
                 android:id="@+id/txtvw2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="65dp"
-                android:text="A productivity app"
-                android:textColor="#FF6F0D"
+                android:layout_marginTop="60dp"
+                android:text=" A "
+                android:textColor="#283C63"
                 android:textSize="26sp" />
 
+
+            <TextView
+                android:id="@+id/txtvw3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="90dp"
+                android:text=" productivity "
+                android:textColor="#283C63"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/txtvw4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
+                android:text=" app "
+                android:textColor="#283C63"
+                android:textSize="26sp" />
 
             <ImageView
                 android:layout_width="150dp"
@@ -45,15 +65,15 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="0dp"
                 android:src="@drawable/targeticon"
-                app:tint="#FF6F0D" />
+                app:tint="#283C63" />
 
         </RelativeLayout>
 
         <GridLayout
             android:layout_width="300dp"
-            android:layout_height="match_parent"
+            android:layout_height="435dp"
             android:layout_marginLeft="60dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:layout_marginRight="60dp"
             android:alignmentMode="alignMargins"
             android:columnCount="1"
@@ -70,18 +90,19 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="12dp"
+                >
 
                 <TextView
                     android:layout_width="150dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_row="0"
                     android:layout_column="2"
                     android:layout_gravity="center"
                     android:layout_marginLeft="50dp"
                     android:text="Timer"
                     android:textAlignment="center"
-                    android:textColor="#F6C109"
+                    android:textColor="#F85F73"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -96,11 +117,10 @@
                     android:padding="16dp">
 
                     <pl.droidsonroids.gif.GifImageView
-                        android:paddingRight="20dp"
                         android:layout_width="110dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/hourglassgif"
-                        />
+                        android:paddingRight="20dp"
+                        android:src="@drawable/hourglassgif" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -114,7 +134,7 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -125,7 +145,7 @@
                     android:layout_marginLeft="50dp"
                     android:text="Calendar"
                     android:textAlignment="center"
-                    android:textColor="#F6C109"
+                    android:textColor="#F85F73"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -137,11 +157,10 @@
                     android:padding="16dp">
 
                     <pl.droidsonroids.gif.GifImageView
-                        android:paddingRight="20dp"
                         android:layout_width="110dp"
                         android:layout_height="match_parent"
-                        android:src="@drawable/calendargif"
-                        />
+                        android:paddingRight="20dp"
+                        android:src="@drawable/calendargif" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -155,7 +174,7 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -166,7 +185,7 @@
                     android:layout_marginLeft="50dp"
                     android:text="ToDo List"
                     android:textAlignment="center"
-                    android:textColor="#F6C109"
+                    android:textColor="#F85F73"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -178,11 +197,10 @@
                     android:padding="16dp">
 
                     <pl.droidsonroids.gif.GifImageView
-                        android:paddingRight="20dp"
                         android:layout_width="110dp"
                         android:layout_height="match_parent"
-                        android:src="@drawable/todo_listgif"
-                        />
+                        android:paddingRight="20dp"
+                        android:src="@drawable/todo_listgif" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </GridLayout>
