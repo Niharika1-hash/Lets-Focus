@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Let\'s Focus</string>
-    <string name="CALENDAR_API">AIzaSyAcZn69d1BzjIYCklP3HW5qNPwS57AyvE0</string>
-    <string name="save">Save</string>
-    <string name="event">Event</string>
-    <string name="event_name">Event Name</string>
-</resources>
